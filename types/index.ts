@@ -13,7 +13,7 @@ export interface Creature {
   name: string;
   type: CreatureType;
   description: string;
-  imageUrl: string;
+  imageUrl: any;
   abilities: string[];
   dangerLevel: DangerLevel;
   lastSeen: string;

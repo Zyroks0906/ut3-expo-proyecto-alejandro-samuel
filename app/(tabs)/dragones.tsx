@@ -2,7 +2,7 @@
 // Pantalla principal de Dragones
 
 import React, { useState } from 'react';
-import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useCreatureStore } from '../../stores/useCreatureStore';
@@ -12,15 +12,36 @@ import { FilterType } from '../../types';
 import PergaminoBackground from '../../components/PergaminoBackground';
 import CreatureCard from '../../components/CreatureCard';
 import FilterBar from '../../components/FilterBar';
+import { useShakeDetector } from '../../hooks/useShakeDetector';
 
 export default function DragonesScreen() {
   const { settings } = useSettingsStore();
+  const creatures = useCreatureStore((state) => state.creatures); // ← CAMBIO AQUÍ
   const getFiltered = useCreatureStore((state) => state.getFiltered);
+  const getRandomCreature = useCreatureStore((state) => state.getRandomCreature);
   const theme = THEMES[settings.theme];
 
   const [currentFilter, setCurrentFilter] = useState<FilterType>(settings.defaultOrder);
 
   const dragons = getFiltered('dragon', currentFilter);
+
+  // Detector de shake
+  useShakeDetector(() => {
+    const randomCreature = getRandomCreature();
+    if (randomCreature) {
+      Alert.alert(
+        '🐉 Criatura Aleatoria',
+        `${randomCreature.name} - ${randomCreature.description.substring(0, 100)}...`,
+        [
+          {
+            text: 'Ver detalles',
+            onPress: () => router.push(`/detalle/${randomCreature.id}`),
+          },
+          { text: 'Cerrar', style: 'cancel' },
+        ]
+      );
+    }
+  }, settings.shakeEnabled);
 
   const handleCreaturePress = (id: string) => {
     router.push(`/detalle/${id}`);
@@ -44,6 +65,7 @@ export default function DragonesScreen() {
         <FlatList
           data={dragons}
           keyExtractor={(item) => item.id}
+          extraData={creatures} // ← AÑADE ESTO para forzar re-render
           renderItem={({ item }) => (
             <CreatureCard
               creature={item}

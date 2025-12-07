@@ -36,11 +36,12 @@ export const useCreatureStore = create<CreatureStore>()(
       },
 
       updateCreature: (id, data) => {
-        set((state) => ({
-          creatures: state.creatures.map((creature) =>
-            creature.id === id ? { ...creature, ...data } : creature
-          ),
-        }));
+        set((state) => {
+          const newCreatures = state.creatures.map((creature) =>
+            creature.id === id ? { ...creature, ...data } : { ...creature }
+          );
+          return { creatures: newCreatures };
+        });
       },
 
       deleteCreature: (id) => {
@@ -72,11 +73,11 @@ export const useCreatureStore = create<CreatureStore>()(
 
         switch (filter) {
           case 'alphabetical':
-            return filtered.sort((a, b) => a.name.localeCompare(b.name));
+            return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
           case 'danger':
-            return filtered.sort((a, b) => b.dangerLevel - a.dangerLevel);
+            return [...filtered].sort((a, b) => b.dangerLevel - a.dangerLevel);
           case 'recent':
-            return filtered.sort((a, b) => b.createdAt - a.createdAt);
+            return [...filtered].sort((a, b) => b.createdAt - a.createdAt);
           case 'favorites':
             return filtered.filter((c) => c.isFavorite);
           default:

@@ -1,8 +1,12 @@
 // app/index.tsx
-// Pantalla de bienvenida (Samuel la rellenará después)
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function Index() {
-    return <Redirect href="/(tabs)/dragones" />;
+  useEffect(() => {
+    AsyncStorage.clear();
+  }, []);
+
+  return <Redirect href="/(tabs)/dragones" />;
 }

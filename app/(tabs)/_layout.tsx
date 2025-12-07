@@ -53,7 +53,7 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="scriptorium"
                 options={{
-                    title: 'Scriptorium',
+                    title: 'Ajustes',
                     tabBarIcon: ({ color }) => <TabIcon icon="⚙️" color={color} />,
                 }}
             />
